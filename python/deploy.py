@@ -67,7 +67,7 @@ except botocore.exceptions.NoCredentialsError:
 print(" ------ ")
 print("📦 Compressing files from the layer")
 with zipfile.ZipFile(ZIP_FILE, 'w', zipfile.ZIP_DEFLATED) as zipf:
-    for root, _, files in os.walk("python"):
+    for root, _, files in os.walk("holnex"):
         for file in files:
             file_path = os.path.join(root, file)
             arcname = os.path.relpath(file_path, ".")  # Mantiene la estructura correcta
