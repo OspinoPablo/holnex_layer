@@ -7,10 +7,10 @@ import botocore.exceptions
 from messages import *
 
 # Configuración
-ZIP_FILE = "edutin_client_layer.zip"
-LAYER_NAME_PROD = "EdutinLayers"
-LAYER_NAME_DEV = "EdutinLayerDevelop"
-COMPATIBLE_RUNTIMES = ["python3.10", "python3.11", "python3.12"]
+ZIP_FILE = "holnex_client_layer.zip"
+LAYER_NAME_PROD = "HolnexLayer"
+LAYER_NAME_DEV = "HolnexLayerDevelop"
+COMPATIBLE_RUNTIMES = ["python3.12", "python3.13", "python3.14"]
 COMPATIBLE_ARCHITECTURES = ["x86_64", "arm64"]
 
 # Configurar argumentos
