@@ -154,15 +154,14 @@ def ddb_read(table:str, params:dict, limit=config.paginate, **args):
                     qparams['ExclusiveStartKey']=result.pop('LastEvaluatedKey')
                 else:
                     break
-            except KeyError as ke:
-                logger.error(f'[READ - KeyError]:: {ke}')
+            except KeyError as e:
                 break
             except Exception as e:
                 logger.error(f'[READ - KeyError] | Error trying to perform an operation in DynamoDB', exc_info=log_errors)
                 logger.error(f'[ERROR DETAILS]: Schema `{table}` params {qparams}')
                 break
 
-    return { 'Items': items,**({'LastEvaluatedKey':result['LastEvaluatedKey']} if 'LastEvaluatedKey' in result else {}) }
+    return { 'Items': items, 'Count_Items' :len(items), **({'LastEvaluatedKey':result['LastEvaluatedKey']} if 'LastEvaluatedKey' in result else {}) }
 
 
 @require_table
