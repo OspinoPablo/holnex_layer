@@ -3,7 +3,6 @@ import uuid
 
 from boto3 import resource
 from datetime import datetime as dt, timezone as tz
-from config import defaults, allowed_fields, allowed_fields_to_create
 from ddb_client.constants import RESERVED_WORDS
 from ddb_client.utils import (
     chunk,
@@ -25,6 +24,8 @@ dynamodb = resource('dynamodb')
 
 @require_table
 def __build_update_params(table:str, params:dict, data:dict, **conditions):
+    from config import allowed_fields
+    
     log_criticals = conditions.pop('log_criticals', True)
     log_qparams   = conditions.pop('log_qparams', False)
     log_schema    = conditions.pop('log_schema', False)
@@ -195,6 +196,8 @@ def __build_delete_params(table:str, params:dict, return_values=True, log_qparam
 
 @require_table
 def __build_increase_query(table:str, params:dict, data:dict, log_qparams=False, log_schema=False):
+    from config import allowed_fields
+    
     schema = describe_schema(table)
 
     pk_name, pk_type               = (schema[table]['pk'], schema[table]['pk_type'])
@@ -278,6 +281,8 @@ def __build_increase_query(table:str, params:dict, data:dict, log_qparams=False,
 
 
 def ddb_create(table: str, data: dict, **args):
+    from config import defaults, allowed_fields_to_create
+    
     log_qparams = args.pop('log_qparams', True)
     log_errors  = args.pop('log_errors', True)
 
@@ -346,6 +351,7 @@ def ddb_create(table: str, data: dict, **args):
 
 
 def ddb_update(table:str, params:dict, data:dict, **args):
+    
     log_errors = args.pop('log_errors', True)
 
     params = __build_update_params(table, params, data, **args)
@@ -361,6 +367,7 @@ def ddb_update(table:str, params:dict, data:dict, **args):
 
 
 def ddb_increase(table:str, params:dict, data:dict, **args):
+    
     log_errors   = args.pop('log_errors', True)
     dynamo_table = dynamodb.Table(table)
     
@@ -470,6 +477,8 @@ def batch_delete_items(table:str, source:list, **args):
 
 @require_table
 def batch_create_items(table: str, source:list, **args):
+    from config import defaults, allowed_fields_to_create
+    
     logger_keys   = args.pop('log_keys', False)
     logger_result = args.pop('log_result', False)
 
@@ -501,7 +510,10 @@ def batch_create_items(table: str, source:list, **args):
 
     if table not in defaults.get('data', {}):
         logger.error(f'[Updates] | The schema `{table}` has not been declared in the `defaults.data` in config.py')
+        return { 'status': False, 'row_count': 0 }
 
+    if table not in allowed_fields_to_create:
+        logger.error(f'[Updates] | The schema `{table}` has not been declared in the `allowed_fields_to_create` in config.py')
         return { 'status': False, 'row_count': 0 }
 
     for item in source:
