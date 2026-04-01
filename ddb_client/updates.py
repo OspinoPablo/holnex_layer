@@ -3,7 +3,7 @@ import uuid
 
 from boto3 import resource
 from datetime import datetime as dt, timezone as tz
-from ddb_client.config import defaults, allowed_fields, allowed_fields_to_create
+from config import defaults, allowed_fields, allowed_fields_to_create
 from ddb_client.constants import RESERVED_WORDS
 from ddb_client.utils import (
     chunk,
