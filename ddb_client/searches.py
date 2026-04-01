@@ -1,8 +1,8 @@
 import logging
-import config
+import ddb_client.config as config
 
 from functools import reduce
-from config import fields
+from ddb_client.config import fields
 from ddb_client.constants import RESERVED_WORDS
 from ddb_client.utils import (
     chunk, 
