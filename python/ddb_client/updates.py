@@ -74,13 +74,9 @@ def __build_update_params(table:str, params:dict, data:dict, **conditions):
 
         # Remove invalid types and continue with the permitted ones
         if invalid_type_fields:
-            logger.critical(
+            raise ValueError(
                 f'[Updates] | Invalid types detected: {invalid_type_fields}'
             )
-            data = {
-                k: v for k, v in data.items()
-                if k not in [f[0] for f in invalid_type_fields]
-            }
         
         val_fmt = lambda key: key.replace('.', '_')
         exp_fmt = lambda key, sep: (key.replace('.', f'.{sep}'), val_fmt(key))
@@ -320,9 +316,7 @@ def ddb_create(table: str, data: dict, **args):
                 )
 
         if invalid_type_fields:
-            logger.critical(f'[CREATE] | Invalid types detected: {invalid_type_fields}')
-            invalid_fields = [f[0] for f in invalid_type_fields]
-            data = {k: v for k, v in data.items() if k not in invalid_fields}
+            raise ValueError(f'[CREATE] | Invalid types detected: {invalid_type_fields}')
 
         item = {
             'id': str(uuid.uuid4()),
@@ -354,8 +348,12 @@ def ddb_update(table:str, params:dict, data:dict, **args):
     
     log_errors = args.pop('log_errors', True)
 
-    params = __build_update_params(table, params, data, **args)
-    
+    try:
+        params = __build_update_params(table, params, data, **args)
+    except Exception as ve:
+        logger.error(f'[UPDATE] | Error trying to build query for DynamoDB `{table}`: {ve}', exc_info=log_errors)
+        return { 'status' : False, 'row_count' : 0 }
+
     try:
         table = dynamodb.Table(table)
         result = table.update_item(**params)
