@@ -143,6 +143,10 @@ class DynamoComparison:
     @staticmethod
     def And(conditions):
         return DynamoComparison('and', conditions=conditions)
+    
+    @staticmethod
+    def NotIn(values, is_key=False):
+        return DynamoComparison.And([DynamoComparison.Ne(v, is_key=is_key) for v in values])
 
 
 def convert_to_decimals(obj):
