@@ -145,20 +145,6 @@ class DynamoComparison:
         return DynamoComparison('and', conditions=conditions)
 
 
-def convert_decimals(obj, convertion_type=str):
-    if isinstance(obj, dict):
-        return {k: convert_decimals(v, convertion_type) for k, v in obj.items()}
-        
-    elif isinstance(obj, list):
-        return [convert_decimals(i, convertion_type) for i in obj]
-        
-    elif isinstance(obj, Decimal):
-        return convertion_type(obj)
-        
-    else:
-        return obj
-
-
 def convert_to_decimals(obj):
     if isinstance(obj, dict):
         return {k: convert_to_decimals(v) for k, v in obj.items()}

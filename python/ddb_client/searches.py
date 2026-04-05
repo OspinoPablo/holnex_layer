@@ -13,7 +13,8 @@ from ddb_client.utils import (
     convert_to_field_type, 
     buildProjectionExpression, 
     extract_search_structure,
-    require_table
+    require_table,
+    convert_decimals
 )
 from boto3 import resource
 from boto3.dynamodb.conditions import Key, Attr, And
@@ -161,7 +162,7 @@ def ddb_read(table:str, params:dict, limit=config.paginate, **args):
                 logger.error(f'[ERROR DETAILS]: Schema `{table}` params {qparams}')
                 break
 
-    return { 'Items': items, 'Count_Items' :len(items), **({'LastEvaluatedKey':result['LastEvaluatedKey']} if 'LastEvaluatedKey' in result else {}) }
+    return { 'Items': convert_decimals(items), 'Count_Items' :len(items), **({'LastEvaluatedKey':result['LastEvaluatedKey']} if 'LastEvaluatedKey' in result else {}) }
 
 
 @require_table
@@ -250,7 +251,7 @@ def batch_get_items(table:str, source:list, **args):
             items.extend(response['Responses'].get(table, []))
         
         
-    return items
+    return convert_decimals(items)
 
 
 
@@ -299,4 +300,4 @@ def dynamo_scan(table: str):
         response = dynamo_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
         items.extend(response['Items'])
 
-    return items
+    return convert_decimals(items)
