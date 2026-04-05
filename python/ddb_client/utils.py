@@ -1,3 +1,4 @@
+from decimal import Decimal
 import logging
 import ast
 
@@ -368,3 +369,16 @@ def normalize_allowed_fields(raw_allowed_fields: dict) -> dict:
         raise TypeError(f'Invalid allowed_fields schema for table {table}')
 
     return normalized
+
+def convert_decimals(obj, convertion_type=str):
+    if isinstance(obj, dict):
+        return {k: convert_decimals(v, convertion_type) for k, v in obj.items()}
+        
+    elif isinstance(obj, list):
+        return [convert_decimals(i, convertion_type) for i in obj]
+        
+    elif isinstance(obj, Decimal):
+        return convertion_type(obj)
+        
+    else:
+        return obj
