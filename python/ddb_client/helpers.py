@@ -158,3 +158,17 @@ def convert_decimals(obj, convertion_type=str):
     else:
         return obj
 
+
+def convert_to_decimals(obj):
+    if isinstance(obj, dict):
+        return {k: convert_to_decimals(v) for k, v in obj.items()}
+        
+    elif isinstance(obj, list):
+        return [convert_to_decimals(i) for i in obj]
+        
+    elif isinstance(obj, float):
+
+        return Decimal(str(obj))
+        
+    else:
+        return obj

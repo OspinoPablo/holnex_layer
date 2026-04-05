@@ -284,3 +284,19 @@ def ddb_counter(table:str, params:dict, **args):
     pages +=  1 if pages % 1 > 0 else 0
 
     return { 'Count_Items': amount, 'Pages': int(pages) }
+
+
+@require_table
+def dynamo_scan(table: str):
+    # Escanear tabla records_links
+    dynamo_table = dynamodb.Table(table)
+    items = []
+
+    response = dynamo_table.scan()
+    items.extend(response['Items'])
+
+    while 'LastEvaluatedKey' in response:
+        response = dynamo_table.scan(ExclusiveStartKey=response['LastEvaluatedKey'])
+        items.extend(response['Items'])
+
+    return items
