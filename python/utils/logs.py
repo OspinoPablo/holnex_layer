@@ -78,3 +78,19 @@ def logger_runtime_event(event: dict):
     logger.info(json.dumps(log_data))
 
 
+def build_error(status_code, log_message, result_message, error_message):
+
+    # Show error to CloudWatch
+    logger.error(log_message)
+
+    # Show error to client
+    response =  {
+        'statusCode': status_code,
+        'body': json.dumps({
+            'result': result_message,
+            'errorMessage': error_message,
+            'status': False
+        })
+    }
+
+    return response
