@@ -1,5 +1,7 @@
 import json
 
+from python.utils.logs import build_error
+
 def params_parser(value):
     try:
         return json.loads(value)
@@ -37,3 +39,12 @@ def header_management(event: dict, m_keys=[], m_data=[], id_param_name=None):
         raise KeyError(missing_data)
         
     return params, data
+
+def validate_user(user: dict, allowed_roles: dict):
+    if user['role'] not in allowed_roles:
+        return build_error(
+            status_code=403,
+            log_message=f'[ AUTH ] The user [ {user["id"]} - {user["role"]} ] has no authorization to perform this function.',
+            result_message='UnauthorizedException',
+            error_message=f'The user [ {user["id"]} ] with the role [ {user["role"]} ] has no authorization to perform this function.'
+        )
