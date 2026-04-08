@@ -3,8 +3,8 @@ import uuid
 
 from boto3 import resource
 from datetime import datetime as dt, timezone as tz
-from constants import RESERVED_WORDS
-from utils import (
+from ddb_client.constants import RESERVED_WORDS
+from ddb_client.utils import (
     chunk,
     extract_keys,
     describe_schema, 

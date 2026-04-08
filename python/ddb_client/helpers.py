@@ -1,5 +1,5 @@
 from boto3.dynamodb.conditions import Key, Attr
-from utils import convert_to_field_type, build_conditions
+from ddb_client.utils import convert_to_field_type, build_conditions
 from decimal import Decimal
 
 class DynamoComparison:

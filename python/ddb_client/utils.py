@@ -5,7 +5,7 @@ import ast
 from itertools import islice
 from boto3 import client
 
-from constants import RESERVED_WORDS
+from ddb_client.constants import RESERVED_WORDS
 
 # declare a logger
 logger = logging.getLogger()
