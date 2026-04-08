@@ -44,9 +44,9 @@ def validate_user(user: dict, allowed_roles: dict, role_validation: bool=None, p
     if user['status'] in ('DELETED', 'BANNED'):
         return build_error(
             status_code=403,
-            log_message=f'[ AUTH ] The user [ {user["id"]} - {user["role"]} ] has no authorization to perform this function.',
+            log_message=f'[ AUTH ] The user [ {user["id"]} - {user["status"]} ] has no authorization to perform this function.',
             result_message='UnauthorizedException',
-            error_message=f'The user [ {user["id"]} ] with the role [ {user["role"]} ] has no authorization to perform this function.'
+            error_message=f'The user [ {user["id"]} ] with the status [ {user["status"]} ] has no authorization to perform this function.'
         )
         
     if role_validation:

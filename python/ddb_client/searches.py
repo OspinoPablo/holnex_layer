@@ -3,8 +3,8 @@ import config
 
 from functools import reduce
 from config import fields
-from ddb_client.constants import RESERVED_WORDS
-from ddb_client.utils import (
+from constants import RESERVED_WORDS
+from utils import (
     chunk, 
     extract_keys,
     describe_schema, 
