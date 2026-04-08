@@ -1,6 +1,6 @@
 import json
 
-from python.utils.logs import build_error
+from utils.logs import build_error
 
 def params_parser(value):
     try:
