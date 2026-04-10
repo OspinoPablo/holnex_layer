@@ -51,7 +51,7 @@ def validate_user(user: dict, allowed_roles: dict, role_validation: bool=None, p
         
     if role_validation:
         is_admin = user['role'] == 'admin'
-        is_owner = user['id'] == params['id']
+        is_owner = user['id'] == params.get('id', params.get('user_id'))
 
         if user['role'] not in allowed_roles or (not is_admin and not is_owner):
             return build_error(
