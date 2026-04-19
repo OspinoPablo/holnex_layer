@@ -42,31 +42,42 @@ def header_management(event: dict, m_keys=[], m_data=[], id_param_name=None):
 
 def validate_user(user: dict, allowed_roles: dict, role_validation: bool=None, params: dict={}):
     if user['status'] in ('DELETED', 'BANNED'):
-        return build_error(
-            status_code=403,
-            log_message=f'[ AUTH ] The user [ {user["id"]} - {user["status"]} ] has no authorization to perform this function.',
-            result_message='UnauthorizedException',
-            error_message=f'The user [ {user["id"]} ] with the status [ {user["status"]} ] has no authorization to perform this function.'
-        )
+        return {
+            "status": False,
+            "body": build_error(
+                status_code=403,
+                log_message=f'[ AUTH ] The user [ {user["id"]} - {user["status"]} ] has no authorization to perform this function.',
+                result_message='UnauthorizedException',
+                error_message=f'The user [ {user["id"]} ] with the status [ {user["status"]} ] has no authorization to perform this function.'
+            )
+        }
         
     if role_validation:
         is_admin = user['role'] == 'admin'
         is_owner = user['id'] == params.get('id', params.get('user_id'))
 
         if user['role'] not in allowed_roles or (not is_admin and not is_owner):
-            return build_error(
-                status_code= 403,
-                log_message= f'[ AUTH ] The user [ {user['id']} - {user['role']} ]',
-                result_message= 'UnauthorizedException',
-                error_message= f'The user [ {user['id']} ] with the role [ {user['role']} ] has no authorization to perform this function.'
-            )
+            return { 
+                "status": False,
+                "body": build_error(
+                    status_code= 403,
+                    log_message= f'[ AUTH ] The user [ {user['id']} - {user['role']} ]',
+                    result_message= 'UnauthorizedException',
+                    error_message= f'The user [ {user['id']} ] with the role [ {user['role']} ] has no authorization to perform this function.'
+                )
+            }
             
-        return is_admin, is_owner
+        return {'status': True, 'is_admin': is_admin, 'is_owner': is_owner}
     
     if user['role'] not in allowed_roles:
-        return build_error(
-            status_code=403,
-            log_message=f'[ AUTH ] The user [ {user['id']} - {user['role']} ] has no authorization to perform this function.',
-            result_message='UnauthorizedException',
-            error_message=f'The user [ {user['id']} ] with the role [ {user['role']} ] has no authorization to perform this function.'
-        )
+        return { 
+            "status": False,
+            "body": build_error(
+                status_code=403,
+                log_message=f'[ AUTH ] The user [ {user['id']} - {user['role']} ] has no authorization to perform this function.',
+                result_message='UnauthorizedException',
+                error_message=f'The user [ {user['id']} ] with the role [ {user['role']} ] has no authorization to perform this function.'
+            )
+        }
+    
+    return {"status": True}
